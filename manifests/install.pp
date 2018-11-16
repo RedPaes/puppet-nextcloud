@@ -1,4 +1,6 @@
 class nextcloud::install (
+  String $archive                         = $nextcloud::archive,
+  Stdlib::Httpurl $archive_url            = $nextcloud::archive_url,
   Stdlib::Absolutepath $install_dir_base  = $nextcloud::install_dir_base,
   Stdlib::Absolutepath $install_dir       = $nextcloud::install_dir,
   Stdlib::Absolutepath $data_directory    = $nextcloud::data_directory,
@@ -20,12 +22,12 @@ class nextcloud::install (
     require => File[$install_dir_base]
   }
 
-  archive { '/var/www/html/nextcloud-13.0.2.tar.bz2':
+  archive { "$archive":
     ensure       => present,
-    path         => '/tmp/nextcloud-13.0.2.tar.bz2',
+    path         => "/tmp/$archive",
     extract      => true,
     extract_path => $install_dir_base,
-    source       => 'https://download.nextcloud.com/server/releases/nextcloud-13.0.2.tar.bz2',
+    source       => $archive_url,
     creates      => "$install_dir/index.php",
     cleanup      => true,
     user         => 'www-data',

@@ -40,6 +40,9 @@
 #
 #
 class nextcloud (
+  String $version                                     = 'latest',
+  String $archive                                     = "$version.tar.bz2",
+  Stdlib::Httpurl $archive_url                        = "https://download.nextcloud.com/server/releases/$archive",
   Stdlib::Absolutepath $install_dir_base              = '/var/www/nextcloud',
   Stdlib::Absolutepath $data_directory                = "$install_dir_base/data",
   Boolean $db_manage                                  = true,
