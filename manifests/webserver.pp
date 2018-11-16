@@ -30,7 +30,7 @@ class nextcloud::webserver (
   }
   nginx::resource::server { 'nextcloud_server_main':
     ensure               => present,
-    server_name          => ['nextcloud', 'nextcloud.int.othalland.xyz'],
+    server_name          => $server_names,
     ssl                  => $ssl,
     ssl_cert             => $ssl_cert_file,
     ssl_key              => $ssl_key_file,
