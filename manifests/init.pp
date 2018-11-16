@@ -40,8 +40,8 @@
 #
 #
 class nextcloud (
-  Stdlib::Absolutepath $install_dir                   = '/var/www/html/nextcloud',
-  Stdlib::Absolutepath $data_directory                = '/var/www/html/nextcloud/data',
+  Stdlib::Absolutepath $install_dir_base              = '/var/www/nextcloud',
+  Stdlib::Absolutepath $data_directory                = "$install_dir_base/data",
   Boolean $db_manage                                  = true,
   String $db_type                                     = 'mysql',
   String $db_name                                     = 'nextcloud',
@@ -65,6 +65,8 @@ class nextcloud (
   if $ssl and !($ssl_cert_file and $ssl_key_file) {
     fail('You must provide certificate file and key file for SSL config.')
   }
+
+  $install_dir = "$install_dir_base/nextcloud"
 
   if $db_manage {
     contain nextcloud::database
