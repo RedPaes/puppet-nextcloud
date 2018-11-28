@@ -7,11 +7,14 @@ class nextcloud::webserver (
   $server_names     = $nextcloud::server_names,
   $php_version      = $nextcloud::php_version,
   $worker_processes = $nextcloud::worker_processes,
+  $install_dir      = $nextcloud::install_dir,
 ) {
   if $ssl == true {
     $port = $https_port
+    $https = 'on'
   } else {
     $port = $http_port
+    $https = 'off'
   }
 
   class { 'nginx':
@@ -35,8 +38,8 @@ class nextcloud::webserver (
     ssl_cert             => $ssl_cert_file,
     ssl_key              => $ssl_key_file,
     listen_port          => $port,
-    http2                => true,
-    www_root             => '/var/www/html/nextcloud',
+    http2                => 'on',
+    www_root             => $install_dir,
     client_max_body_size => '512M',
     use_default_location => false,
     add_header           => {
@@ -57,8 +60,8 @@ class nextcloud::webserver (
   }
   nginx::resource::location { 'root':
     ensure        => present,
-    ssl           => true,
-    ssl_only      => true,
+    ssl           => $ssl,
+    ssl_only      => $ssl,
     index_files   => [],
     server        => 'nextcloud_server_main',
     location      => '/',
@@ -67,8 +70,8 @@ class nextcloud::webserver (
   }
   -> nginx::resource::location { 'misc':
     ensure        => present,
-    ssl           => true,
-    ssl_only      => true,
+    ssl           => $ssl,
+    ssl_only      => $ssl,
     index_files   => [],
     server        => 'nextcloud_server_main',
     location      => '~ ^/(?:build|tests|config|lib|3rdparty|templates|data)/',
@@ -77,8 +80,8 @@ class nextcloud::webserver (
   }
   -> nginx::resource::location { 'internal':
     ensure        => present,
-    ssl           => true,
-    ssl_only      => true,
+    ssl           => $ssl,
+    ssl_only      => $ssl,
     index_files   => [],
     server        => 'nextcloud_server_main',
     location      => '~ ^/(?:\.|autotest|occ|issue|indie|db_|console)',
@@ -87,8 +90,8 @@ class nextcloud::webserver (
   }
   -> nginx::resource::location { 'nextcloud':
     ensure      => present,
-    ssl         => true,
-    ssl_only    => true,
+    ssl         => $ssl,
+    ssl_only    => $ssl,
     index_files => [],
     server      => 'nextcloud_server_main',
     location    => '~ ^/(?:index|remote|public|cron|core/ajax/update|status|ocs/v[12]|updater/.+|ocs-provider/.+)\.php(?:$|/)',
@@ -97,10 +100,10 @@ class nextcloud::webserver (
       'include fastcgi_params;',
       'fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;',
       'fastcgi_param PATH_INFO $fastcgi_path_info;',
-      'fastcgi_param HTTPS on;',
+      "fastcgi_param HTTPS $https;",
       'fastcgi_param modHeadersAvailable true;',
       'fastcgi_param front_controller_active true;',
-      'fastcgi_pass php-handler;',
+      "fastcgi_pass unix:/run/php/php${php_version}-fpm.sock;",
       'fastcgi_intercept_errors on;',
       'fastcgi_request_buffering off;',
     ],
@@ -108,8 +111,8 @@ class nextcloud::webserver (
   }
   -> nginx::resource::location { 'updater':
     ensure      => present,
-    ssl         => true,
-    ssl_only    => true,
+    ssl         => $ssl,
+    ssl_only    => $ssl,
     index_files => ['index.php'],
     server      => 'nextcloud_server_main',
     location    => '~ ^/(?:updater|ocs-provider)(?:$|/)',
@@ -118,8 +121,8 @@ class nextcloud::webserver (
   }
   -> nginx::resource::location { 'css_js':
     ensure              => present,
-    ssl                 => true,
-    ssl_only            => true,
+    ssl                 => $ssl,
+    ssl_only            => $ssl,
     index_files         => ['index.php'],
     server              => 'nextcloud_server_main',
     location            => '~ \.(?:css|js|woff|svg|gif)$',
@@ -137,18 +140,13 @@ class nextcloud::webserver (
   }
   -> nginx::resource::location { 'static_media_pictures':
     ensure              => present,
-    ssl                 => true,
-    ssl_only            => true,
+    ssl                 => $ssl,
+    ssl_only            => $ssl,
     index_files         => ['index.php'],
     server              => 'nextcloud_server_main',
     location            => '~ \.(?:png|html|ttf|ico|jpg|jpeg)$',
     try_files           => ['$uri', '/index.php$uri$is_args$args'],
     location_cfg_append => { 'access_log' => 'off' },
     priority            => 407,
-  }
-  nginx::resource::upstream { 'php-handler':
-    members => [
-      "unix:/run/php/php${php_version}-fpm.sock",
-    ],
   }
 }
