@@ -96,6 +96,7 @@ class nextcloud::webserver (
     server      => 'nextcloud_server_main',
     location    => '~ ^/(?:index|remote|public|cron|core/ajax/update|status|ocs/v[12]|updater/.+|ocs-provider/.+)\.php(?:$|/)',
     raw_append  => [
+      'client_max_body_size 4095m;',
       'fastcgi_split_path_info ^(.+\.php)(/.*)$;',
       'include fastcgi_params;',
       'fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;',
@@ -105,6 +106,7 @@ class nextcloud::webserver (
       'fastcgi_param front_controller_active true;',
       "fastcgi_pass unix:/run/php/php${php_version}-fpm.sock;",
       'fastcgi_intercept_errors on;',
+      'fastcgi_read_timeout 3600s;',
       'fastcgi_request_buffering off;',
     ],
     priority    => 404,
