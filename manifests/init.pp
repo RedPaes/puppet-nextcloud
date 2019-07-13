@@ -40,9 +40,12 @@
 #
 #
 class nextcloud (
-  Stdlib::Absolutepath $install_dir                   = '/var/www/html/nextcloud',
-  Stdlib::Absolutepath $data_directory                = '/var/www/html/nextcloud/data',
-  Boolean $db_managed                                 = true,
+  String $version                                     = 'latest',
+  String $archive                                     = "$version.tar.bz2",
+  Stdlib::Httpurl $archive_url                        = "https://download.nextcloud.com/server/releases/$archive",
+  Stdlib::Absolutepath $install_dir_base              = '/var/www/nextcloud',
+  Stdlib::Absolutepath $data_directory                = "$install_dir_base/data",
+  Boolean $db_manage                                  = true,
   String $db_type                                     = 'mysql',
   String $db_name                                     = 'nextcloud',
   String $db_user                                     = 'nextcloud',
@@ -66,28 +69,22 @@ class nextcloud (
     fail('You must provide certificate file and key file for SSL config.')
   }
 
-  if $db_managed {
+  $install_dir = "$install_dir_base/nextcloud"
+
+  contain nextcloud::php
+  contain nextcloud::install
+  contain nextcloud::webserver
+  include nextcloud::config
+
+  Class['nextcloud::php']
+  -> Class['nextcloud::install']
+  -> Class['nextcloud::webserver']
+  -> Class['nextcloud::config']
+
+  if $db_manage {
     contain nextcloud::database
-    contain nextcloud::php
-    contain nextcloud::install
-    contain nextcloud::webserver
-    include nextcloud::config
 
     Class['nextcloud::database']
     -> Class['nextcloud::php']
-    -> Class['nextcloud::install']
-    -> Class['nextcloud::webserver']
-    -> Class['nextcloud::config']
-  } else {
-    contain nextcloud::php
-    contain nextcloud::install
-    contain nextcloud::webserver
-    include nextcloud::config
-
-    Class['nextcloud::php']
-    -> Class['nextcloud::install']
-    -> Class['nextcloud::webserver']
-    -> Class['nextcloud::config']
   }
-
 }

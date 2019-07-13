@@ -1,19 +1,37 @@
-class nextcloud::install {
+class nextcloud::install (
+  String $archive                         = $nextcloud::archive,
+  Stdlib::Httpurl $archive_url            = $nextcloud::archive_url,
+  Stdlib::Absolutepath $install_dir_base  = $nextcloud::install_dir_base,
+  Stdlib::Absolutepath $install_dir       = $nextcloud::install_dir,
+  Stdlib::Absolutepath $data_directory    = $nextcloud::data_directory,
+) {
 
-  file { '/var/www/html/nextcloud':
+  file { "$install_dir_base":
     ensure => directory,
-    owner  => 'www-data',
-    group  => 'www-data',
   }
-  -> archive { '/var/www/html/nextcloud-13.0.2.tar.bz2':
+  file { "$install_dir":
+    ensure  => directory,
+    owner   => 'www-data',
+    group   => 'www-data',
+    require => File[$install_dir_base]
+  }
+  file { "$data_directory":
+    ensure  => directory,
+    owner   => 'www-data',
+    group   => 'www-data',
+    require => File[$install_dir_base]
+  }
+
+  archive { "$archive":
     ensure       => present,
-    path         => '/tmp/nextcloud-13.0.2.tar.bz2',
+    path         => "/tmp/$archive",
     extract      => true,
-    extract_path => '/var/www/html',
-    source       => 'https://download.nextcloud.com/server/releases/nextcloud-13.0.2.tar.bz2',
-    creates      => '/var/www/html/nextcloud/index.php',
+    extract_path => $install_dir_base,
+    source       => $archive_url,
+    creates      => "$install_dir/index.php",
     cleanup      => true,
     user         => 'www-data',
     group        => 'www-data',
+    require      => File[$install_dir],
   }
 }
