@@ -94,7 +94,6 @@ class nextcloud::webserver (
       "fastcgi_param HTTPS $https;",
       'fastcgi_param modHeadersAvailable true;',
       'fastcgi_param front_controller_active true;',
-      'fastcgi_pass php-handler;',
       "fastcgi_pass unix:/run/php/php${php_version}-fpm.sock;",
       'fastcgi_intercept_errors on;',
       'fastcgi_read_timeout 3600s;',

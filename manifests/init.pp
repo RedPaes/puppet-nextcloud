@@ -61,7 +61,7 @@ class nextcloud (
   Boolean $ssl                                        = false,
   Variant[Undef, Stdlib::Absolutepath] $ssl_key_file  = undef,
   Variant[Undef, Stdlib::Absolutepath] $ssl_cert_file = undef,
-  String $php_version                                 = '7.0',
+  String $php_version                                 = '7.2',
   Integer $worker_processes                           = 2,
 ) {
 

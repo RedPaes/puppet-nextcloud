@@ -14,7 +14,6 @@ class nextcloud::php (
     "php${php_version}-json",
     "php${php_version}-mysql",
     "php${php_version}-cli",
-    "php${php_version}-mcrypt",
     "php${php_version}-curl",
     "php${php_version}-zip"
   ]
