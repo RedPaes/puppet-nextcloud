@@ -141,4 +141,21 @@ class nextcloud::webserver (
     location_cfg_append => { 'access_log' => 'off' },
     priority            => 407,
   }
+  -> nginx::resource::location { 'carddav':
+    ensure      => present,
+    ssl         => $ssl,
+    ssl_only    => $ssl,
+    server      => 'nextcloud_server_main',
+    location    => '= /.well-known/carddav',
+    location_cfg_append => { 'return' => '301 $scheme://$host:$server_port/remote.php/dav' },
+  }
+
+  -> nginx::resource::location { 'caldav':
+    ensure      => present,
+    ssl         => $ssl,
+    ssl_only    => $ssl,
+    server      => 'nextcloud_server_main',
+    location    => '= /.well-known/caldav',
+    location_cfg_append => { 'return' => '301 $scheme://$host:$server_port/remote.php/dav' },
+  }
 }
