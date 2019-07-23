@@ -5,6 +5,7 @@ class nextcloud::database (
   $db_password      = $nextcloud::db_password,
   $db_host          = $nextcloud::db_host,
   $db_root_password = $nextcloud::db_root_password,
+  $lock_file_path   = '/root/.nextcloud_db_lock'
 ) {
 
   $override_options = {
@@ -28,11 +29,24 @@ class nextcloud::database (
     service_name     => 'mariadb',
     root_password    => $db_root_password,
     override_options => $override_options,
+    restart          => false,
   }
-  mysql::db { $db_name:
-    user     => $db_user,
-    password => $db_password,
-    host     => $db_host,
-    grant    => ['ALL'],
+
+  if ! $facts['nextcloud_db_created'] {
+    warning('Create database since it does not exits')
+
+    mysql::db { $db_name:
+      user     => $db_user,
+      password => $db_password,
+      host     => $db_host,
+      grant    => ['ALL'],
+    }
+    file { $lock_file_path:
+      ensure  => 'present',
+      replace => 'no', # this is the important property
+      content => "DB Lock for Nextcloud",
+      mode    => '0644',
+    }
+
   }
 }
