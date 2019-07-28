@@ -29,11 +29,10 @@ class nextcloud::database (
     service_name     => 'mariadb',
     root_password    => $db_root_password,
     override_options => $override_options,
-    restart          => false,
   }
 
   if ! $facts['nextcloud_db_created'] {
-    warning('Create database since it does not exits')
+    warning('Create database since it lock does not exits')
 
     mysql::db { $db_name:
       user     => $db_user,
