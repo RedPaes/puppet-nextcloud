@@ -20,12 +20,4 @@ class nextcloud::config (
     content   => template('nextcloud/autoconfig.php.erb'),
   }
 
-  file { "${install_dir}/resources/config/mimetypealiases.json ":
-    ensure    => present,
-    owner     => 'www-data',
-    group     => 'www-data',
-    mode      => '0640',
-    show_diff => false,
-    content   => template('nextcloud/mimetypealiases.json'),
-  }
 }

@@ -63,6 +63,11 @@ class nextcloud (
   Variant[Undef, Stdlib::Absolutepath] $ssl_cert_file = undef,
   String $php_version                                 = '7.2',
   Integer $worker_processes                           = 2,
+  Boolean $install_plugin_keeweb                      = true,
+  Boolean $install_plugin_calendar                    = true,
+  Boolean $install_plugin_contacts                    = true,
+  Boolean $enable_cron                                = true,
+
 ) {
 
   if $ssl and !($ssl_cert_file and $ssl_key_file) {
@@ -76,10 +81,30 @@ class nextcloud (
   contain nextcloud::webserver
   include nextcloud::config
 
+
   Class['nextcloud::php']
   -> Class['nextcloud::install']
   -> Class['nextcloud::webserver']
   -> Class['nextcloud::config']
+
+
+    if $install_plugin_keeweb {
+      contain nextcloud::plugin::keepass
+
+  }
+
+  if $install_plugin_contacts {
+    contain nextcloud::plugin::contacts
+
+  }
+
+  if $install_plugin_calendar {
+    contain nextcloud::plugin::calendar
+  }
+
+  if $enable_cron {
+    contain nextcloud::cron
+  }
 
   if $db_manage {
     contain nextcloud::database
