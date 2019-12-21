@@ -4,7 +4,7 @@ class nextcloud::cron () {
     command => "php -f ${nextcloud::install::install_dir}/cron.php",
     minute  => ['*/5'],
     target  => 'www-data',
-    user    => ' www-data',
+    user    => 'www-data',
   }
 
   cron { 'nextcloud-scan-files':
@@ -13,7 +13,7 @@ class nextcloud::cron () {
     minute  => ['15'],
     hour    => ['*/2'],
     target  => 'www-data',
-    user    => ' www-data',
+    user    => 'www-data',
   }
 
 }
