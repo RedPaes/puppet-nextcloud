@@ -66,6 +66,7 @@ class nextcloud (
   Boolean $install_plugin_keeweb                      = true,
   Boolean $install_plugin_calendar                    = true,
   Boolean $install_plugin_contacts                    = true,
+  Boolean $install_plugin_gallery                     = true,
   Boolean $enable_cron                                = true,
 
 ) {
@@ -88,8 +89,8 @@ class nextcloud (
   -> Class['nextcloud::config']
 
 
-    if $install_plugin_keeweb {
-      contain nextcloud::plugin::keepass
+  if $install_plugin_keeweb {
+    contain nextcloud::plugin::keepass
 
   }
 
@@ -100,6 +101,10 @@ class nextcloud (
 
   if $install_plugin_calendar {
     contain nextcloud::plugin::calendar
+  }
+
+  if $install_plugin_gallery {
+    contain nextcloud::plugin::gallery
   }
 
   if $enable_cron {
