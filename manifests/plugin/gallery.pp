@@ -16,9 +16,17 @@ class nextcloud::plugin::gallery () {
     creates  => "${nextcloud::install::install_dir}/apps/previewgenerator/",
     provider => 'shell',
   } ->
-  cron { 'nextcloud-generate-preview-images':
+  exec { "Generate images":
+    command  => 'php occ occ preview:generate-all',
+    user     => 'www-data',
+    timeout  => 1800, # 30min
+    cwd      => "${nextcloud::install::install_dir}",
+    creates  => "${nextcloud::install::install_dir}/apps/previewgenerator/",
+    provider => 'shell',
+  } ->
+  cron { 'nextcloud-pregenerate-preview-images':
     ensure  => 'present',
-    command => "sudo -u www-data php nextcloud/occ preview:generate-all",
+    command => "sudo -u www-data php ${nextcloud::install::install_dir}/occ preview:pre-generate",
     minute  => ['45'],
     hour    => ['*/2'],
     target  => 'www-data',

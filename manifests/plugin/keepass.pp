@@ -7,8 +7,7 @@ class nextcloud::plugin::keepass () {
     mode      => '0640',
     show_diff => false,
     content   => template('nextcloud/mimetypealiases.json'),
-  }
-
+  }->
   exec { "Install Keeweb App":
     command  => 'php occ app:install keeweb',
     user     => 'www-data',
@@ -18,7 +17,7 @@ class nextcloud::plugin::keepass () {
     provider => 'shell',
   } ->
   exec { "Update Mimetypes":
-    command  => 'php occ maintenance:mimetype:update-js',
+    command  => "php  ./occ maintenance:mimetype:update-js",
     user     => 'www-data',
     timeout  => 100,
     cwd      => "${nextcloud::install::install_dir}",
