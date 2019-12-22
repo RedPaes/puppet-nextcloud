@@ -67,6 +67,9 @@ class nextcloud (
   Boolean $install_plugin_calendar                    = true,
   Boolean $install_plugin_contacts                    = true,
   Boolean $install_plugin_gallery                     = true,
+  Boolean $install_plugin_collabora_online            = true,
+  String  $plugin_collabora_domain                    = 'office.meyer-cloud.ch',
+  String $plugin_collabora_ip                         = '172.16.0.7',
   Boolean $enable_cron                                = true,
 
 ) {
@@ -106,6 +109,14 @@ class nextcloud (
   if $install_plugin_gallery {
     contain nextcloud::plugin::gallery
   }
+  if $install_plugin_collabora_online {
+    contain nextcloud::plugin::gallery
+    host { $plugin_collabora_domain:
+      ip => $plugin_collabora_ip,
+    }
+
+  }
+
 
   if $enable_cron {
     contain nextcloud::cron
