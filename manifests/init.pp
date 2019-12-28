@@ -83,6 +83,8 @@ class nextcloud (
   contain nextcloud::php
   contain nextcloud::install
   contain nextcloud::webserver
+  contain nextcloud::plugins
+
   include nextcloud::config
 
 
@@ -90,32 +92,7 @@ class nextcloud (
   -> Class['nextcloud::install']
   -> Class['nextcloud::webserver']
   -> Class['nextcloud::config']
-
-
-  if $install_plugin_keeweb {
-    contain nextcloud::plugin::keepass
-
-  }
-
-  if $install_plugin_contacts {
-    contain nextcloud::plugin::contacts
-
-  }
-
-  if $install_plugin_calendar {
-    contain nextcloud::plugin::calendar
-  }
-
-  if $install_plugin_gallery {
-    contain nextcloud::plugin::gallery
-  }
-  if $install_plugin_collabora_online {
-    contain nextcloud::plugin::gallery
-    host { $plugin_collabora_domain:
-      ip => $plugin_collabora_ip,
-    }
-
-  }
+  -> Class['nextcloud::plugins']
 
 
   if $enable_cron {
