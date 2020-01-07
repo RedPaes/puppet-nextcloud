@@ -8,26 +8,24 @@ class nextcloud::plugins (
   $plugin_collabora_domain         = $nextcloud::plugin_collabora_domain,
 ) {
 
-
   if $install_plugin_keeweb {
-  contain nextcloud::plugin::keepass
-}
+    include nextcloud::plugin::keepass
+  }
 
   if $install_plugin_contacts {
-    contain nextcloud::plugin::contacts
+    include nextcloud::plugin::contacts
   }
 
   if $install_plugin_calendar {
-    contain nextcloud::plugin::calendar
-
+    include nextcloud::plugin::calendar
   }
 
   if $install_plugin_gallery {
-    contain nextcloud::plugin::gallery
+    include nextcloud::plugin::gallery
   }
 
   if $install_plugin_collabora_online {
-    contain nextcloud::plugin::gallery
+    include nextcloud::plugin::collaboraonline
     host { $plugin_collabora_domain:
       ip => $plugin_collabora_ip,
     }

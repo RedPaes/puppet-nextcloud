@@ -66,7 +66,7 @@ class nextcloud (
   Boolean $install_plugin_keeweb                      = true,
   Boolean $install_plugin_calendar                    = true,
   Boolean $install_plugin_contacts                    = true,
-  Boolean $install_plugin_gallery                     = true,
+  Boolean $install_plugin_gallery                     = false,
   Boolean $install_plugin_collabora_online            = true,
   String  $plugin_collabora_domain                    = 'office.meyer-cloud.ch',
   String $plugin_collabora_ip                         = '172.16.0.7',
@@ -101,10 +101,10 @@ class nextcloud (
   }
 
   if $install_redis {
-    contain nextcloud::redis
+    include nextcloud::redis
     Class['nextcloud::database']
     -> Class['nextcloud::php']
-    -> ['nextcloud::redis']
+    -> Class['nextcloud::redis']
   }
 
   if $db_manage {
