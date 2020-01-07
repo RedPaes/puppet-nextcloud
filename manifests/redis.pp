@@ -19,15 +19,14 @@ class nextcloud::redis (
     ensure => installed,
     name   => 'php-redis',
   }
-  exec {"allow webserver access to socket":
+  exec { "allow webserver access to socket":
     unless  => '/bin/grep -q "redis\\S*www-data" /etc/group',
     command => "/usr/sbin/usermod -a -G redis www-data",
     require => Package['redis-server'],
   }
 
   $redis_specific_nc_config = @(EOT)
-
-{
+ {
     "system": {
         "memcache.local": "\\OC\\Memcache\\APCu",
         "memcache.distributed": "\\OC\\Memcache\\Redis",
@@ -39,7 +38,7 @@ class nextcloud::redis (
             "password": "secret"
             }
     }
-}
+ }
     | EOT
 
   $config_dir = "$nextcloud::install_dir/.puppet_conf/"
