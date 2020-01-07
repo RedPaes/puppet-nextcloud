@@ -71,7 +71,8 @@ class nextcloud (
   String  $plugin_collabora_domain                    = 'office.meyer-cloud.ch',
   String $plugin_collabora_ip                         = '172.16.0.7',
   Boolean $enable_cron                                = true,
-
+  Boolean $install_redis                              = true,
+  String $redis_password                              = 'secret',
 ) {
 
   if $ssl and !($ssl_cert_file and $ssl_key_file) {
@@ -97,6 +98,13 @@ class nextcloud (
 
   if $enable_cron {
     contain nextcloud::cron
+  }
+
+  if $install_redis {
+    contain nextcloud::redis
+    Class['nextcloud::database']
+    -> Class['nextcloud::php']
+    -> ['nextcloud::redis']
   }
 
   if $db_manage {

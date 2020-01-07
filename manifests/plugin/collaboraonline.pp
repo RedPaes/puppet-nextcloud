@@ -1,6 +1,6 @@
-class nextcloud::plugin::contacts () {
+class nextcloud::plugin::collaboraonline () {
 
-  exec { "Install Contacts App":
+  exec { "Install collabora App":
     command  => 'php occ app:install richdocuments',
     user     => 'www-data',
     timeout  => 100,
