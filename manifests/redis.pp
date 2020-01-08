@@ -2,7 +2,7 @@ class nextcloud::redis (
 ) {
 
   class { '::redis':
-    bind       => '127.0.0.1',
+    bind => '127.0.0.1',
   }
 
   package { 'php-redis':
@@ -44,11 +44,15 @@ class nextcloud::redis (
 
   }
   exec { "Nextcloud config add caching options":
-    command  => "php occ config:import $full_config_file_path",
-    user     => 'www-data',
-    timeout  => 100,
-    cwd      => "$nextcloud::install::install_dir",
-    provider => 'shell',
-    require  => File[$full_config_file_path],
+    command     => "php occ config:import $full_config_file_path",
+    user        => 'www-data',
+    timeout     => 100,
+    cwd         => "$nextcloud::install::install_dir",
+    provider    => 'shell',
+    require     => File[$full_config_file_path],
+    subscribe   => [
+      File[$full_config_file_path]
+    ],
+    refreshonly => true,
   }
 }
