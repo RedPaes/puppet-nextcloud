@@ -1,41 +1,24 @@
 class nextcloud::redis (
-  $redis_password = $nextcloud::redis_password,
 ) {
 
   class { '::redis':
     bind       => '127.0.0.1',
-    masterauth => $redis_password,
   }
 
-  package { 'memcached':
-    ensure => installed,
-    name   => 'memcached',
-  }
-  package { 'php-memcached':
-    ensure => installed,
-    name   => 'php-memcached',
-  }
   package { 'php-redis':
     ensure => installed,
     name   => 'php-redis',
   }
-  exec { "allow webserver access to socket":
-    unless  => '/bin/grep -q "redis\\S*www-data" /etc/group',
-    command => "/usr/sbin/usermod -a -G redis www-data",
-    require => Package['redis-server'],
-  }
-
   $redis_specific_nc_config = @(EOT)
  {
     "system": {
         "memcache.local": "\\OC\\Memcache\\APCu",
         "memcache.distributed": "\\OC\\Memcache\\Redis",
-        "memcache.locking" : "\OC\Memcache\Redis",
+        "memcache.locking" : "\\OC\\Memcache\\Redis",
         "redis": {
-            "host": ["127.0.0.1"],
-            "port": 0,
-            "dbindex": 0,
-            "password": "secret"
+            "host": "127.0.0.1",
+            "port": 6379,
+            "dbindex": 0
             }
     }
  }
@@ -60,7 +43,7 @@ class nextcloud::redis (
     require   => File[$config_dir],
 
   }
-  exec { "Nextcloud config Redis Password":
+  exec { "Nextcloud config add caching options":
     command  => "php occ config:import $full_config_file_path",
     user     => 'www-data',
     timeout  => 100,

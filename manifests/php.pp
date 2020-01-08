@@ -22,6 +22,7 @@ class nextcloud::php (
     "php${php_version}-curl",
     "php${php_version}-zip",
     "php${php_version}-imagick",
+    "php${php_version}-apcu",
   ]
 
   class { 'phpfpm':
