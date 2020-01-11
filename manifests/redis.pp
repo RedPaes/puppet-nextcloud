@@ -24,7 +24,7 @@ class nextcloud::redis (
  }
     | EOT
 
-  $config_dir = "$nextcloud::install_dir/.puppet_conf/"
+  $config_dir = "$nextcloud::install_dir/../.puppet_conf/"
   $full_config_file_path = "$config_dir/redis_settings.json"
 
   file { $config_dir:
