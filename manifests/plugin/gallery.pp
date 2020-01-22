@@ -26,7 +26,7 @@ class nextcloud::plugin::gallery () {
   } ->
   cron { 'nextcloud-pregenerate-preview-images':
     ensure  => 'present',
-    command => "sudo -u www-data php ${nextcloud::install::install_dir}/occ preview:pre-generate",
+    command => "php ${nextcloud::install::install_dir}/occ preview:pre-generate",
     minute  => ['45'],
     hour    => ['*/2'],
     target  => 'www-data',

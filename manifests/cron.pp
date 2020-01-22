@@ -9,7 +9,7 @@ class nextcloud::cron () {
 
   cron { 'nextcloud-scan-files':
     ensure  => 'present',
-    command => "sudo -u www-data php ${nextcloud::install::install_dir}/occ files:scan --all",
+    command => "php ${nextcloud::install::install_dir}/occ files:scan --all",
     minute  => ['15'],
     hour    => ['*'],
     target  => 'www-data',
