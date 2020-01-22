@@ -1,6 +1,6 @@
 class nextcloud::plugin::keepass () {
 
-  file { "${nextcloud::install::install_dir}/resources/config/mimetypealiases.json ":
+  file { "${nextcloud::install::install_dir}/resources/config/mimetypealiases.json":
     ensure    => present,
     owner     => 'www-data',
     group     => 'www-data',
