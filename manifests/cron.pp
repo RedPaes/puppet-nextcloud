@@ -11,7 +11,7 @@ class nextcloud::cron () {
     ensure  => 'present',
     command => "php ${nextcloud::install::install_dir}/occ files:scan --all",
     minute  => ['15'],
-    hour    => ['*'],
+    hour    => ['21'],
     target  => 'www-data',
     user    => 'www-data',
   }
