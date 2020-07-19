@@ -17,7 +17,7 @@ class nextcloud::plugin::gallery () {
     provider => 'shell',
   } ->
   exec { "Generate images":
-    command  => 'php occ occ preview:generate-all',
+    command  => 'php occ preview:generate-all',
     user     => 'www-data',
     timeout  => 1800, # 30min
     cwd      => "${nextcloud::install::install_dir}",
