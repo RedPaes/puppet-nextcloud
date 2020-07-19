@@ -3,6 +3,8 @@ class nextcloud::redis (
 
   class { '::redis':
     bind => '127.0.0.1',
+    port => 0,
+    unixsocketperm => 0777,
   }
 
   package { 'php-redis':
