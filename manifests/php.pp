@@ -23,6 +23,7 @@ class nextcloud::php (
     "php${php_version}-zip",
     "php${php_version}-imagick",
     "php${php_version}-apcu",
+    "php${php_version}-smbclient",
   ]
 
   class { 'phpfpm':

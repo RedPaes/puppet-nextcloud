@@ -61,7 +61,7 @@ class nextcloud (
   Boolean $ssl                                        = false,
   Variant[Undef, Stdlib::Absolutepath] $ssl_key_file  = undef,
   Variant[Undef, Stdlib::Absolutepath] $ssl_cert_file = undef,
-  String $php_version                                 = '7.4',
+  String $php_version                                 = '7.2',
   Integer $worker_processes                           = 2,
   Boolean $install_plugin_keeweb                      = true,
   Boolean $install_plugin_calendar                    = true,
