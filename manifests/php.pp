@@ -24,6 +24,8 @@ class nextcloud::php (
     "php${php_version}-imagick",
     "php${php_version}-apcu",
     "php${php_version}-smbclient",
+    "php${php_version}-bcmath",
+    "php${php_version}-gmp",
   ]
     
   include apt
