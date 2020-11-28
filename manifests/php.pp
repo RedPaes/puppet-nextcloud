@@ -25,6 +25,15 @@ class nextcloud::php (
     "php${php_version}-apcu",
     "php${php_version}-smbclient",
   ]
+    
+  include apt
+
+  apt::ppa { 'ppa:ondrej/php':
+    package_manage =>  true
+  }
+  package{'smbclient':
+    ensure => 'present'
+  }
 
   class { 'phpfpm':
     process_max  => 20,
